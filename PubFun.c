@@ -266,7 +266,7 @@ void  DerateForQuadrangleDown(DERATE_QUADRANGLE_STRUCT * pDerate, uint16 m_Point
 		}
 		else
 		{
-			if(pDerate->Input > (pDerate->Point + m_DetaPoint))
+			if(pDerate->Input >= (pDerate->Point + m_DetaPoint))
 			{
 				pDerate->Flag = 1;
 				pDerate->Point = pDerate->Point + m_DetaPoint;
@@ -275,4 +275,80 @@ void  DerateForQuadrangleDown(DERATE_QUADRANGLE_STRUCT * pDerate, uint16 m_Point
 	}	
 	return;
 }
-	
+/**********************************************************************************
+ * Description	
+ *********************************************************************************/
+void  DerateForQuadrangleUp(DERATE_QUADRANGLE_STRUCT * pDerate, uint16 m_PointOffset)
+{
+	float32 m_InputDeta;
+	float32 m_Data;
+	float32 m_DetaPoint;
+
+	m_DetaPoint = m_PointOffset;		
+	if(pDerate->Flag == 1)
+	{
+		if(pDerate->Input <= pDerate->Point)
+		{
+			m_InputDeta = pDerate->Input - pDerate->DownErrPoint;
+			m_InputDeta = Max(m_InputDeta,0);
+			m_Data = m_InputDeta * 1000 / (pDerate->DownDeratePoint - pDerate->DownErrPoint);
+			pDerate->OutPut = Min(m_Data,1000);
+			pDerate->Point = pDerate->Input;
+		}
+		else
+		{
+			if(pDerate->Input >= (pDerate->Point + m_DetaPoint))
+			{
+				pDerate->Flag = 2;
+				pDerate->Point = pDerate->Point + m_DetaPoint;
+			}
+		}
+	}
+	else if(pDerate->Flag == 2)
+	{
+		if(pDerate->Input >= pDerate->Point)
+		{
+			m_InputDeta = pDerate->Input - pDerate->UpErrPoint; 
+			m_InputDeta = Max(m_InputDeta,0);
+			m_Data = m_InputDeta * 1000 / (pDerate->UpDeratePoint - pDerate->UpErrPoint);
+			pDerate->OutPut = Min(m_Data,1000);
+			pDerate->Point = pDerate->Input;
+		}
+		else
+		{
+			if(pDerate->Input <= (pDerate->Point - m_DetaPoint))
+			{
+				pDerate->Flag = 1;
+				pDerate->Point = pDerate->Point - m_DetaPoint;
+			}
+		}
+	}	
+	return;
+}
+/**********************************************************************************
+ * Description	
+ *********************************************************************************/
+void  SlidAverageFltS32(AVERAGE_FLT_S32 *pAverageFltS32, uint16 DataLength)
+{
+	sint16   m_InputDeta,m_Output;
+
+	m_InputDeta = pAverageFltS32->Input - pAverageFltS32->InputData[pAverageFltS32->DataIndex];
+	pAverageFltS32->InputTotal += m_InputDeta;
+	pAverageFltS32->InputData[pAverageFltS32->DataIndex] = pAverageFltS32->Input;
+	pAverageFltS32->DataIndex++;
+	if(pAverageFltS32->DataIndex >= DataLength)
+	{
+		pAverageFltS32->DataIndex = 0;
+		pAverageFltS32->Flag = 1;
+	}
+	if(pAverageFltS32->Flag == 1)
+	{
+		m_Output = pAverageFltS32->InputTotal / DataLength;
+	}
+	else
+	{
+		m_Output = pAverageFltS32->InputTotal / pAverageFltS32->DataIndex;
+	}
+	pAverageFltS32->OutPut = m_Output;
+}
+

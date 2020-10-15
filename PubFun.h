@@ -51,6 +51,7 @@ typedef struct SIGNAL_TABLE_INFO_STRUCT_DEF{
 	float32     	Step;	 
 }SIGNAL_TABLE_INFO_STRUCT;
 
+
 typedef struct DERATE_QUADRANGLE_STRUCT_DEF{
 	float32          	Input;
 	float32           OutPut;
@@ -62,6 +63,17 @@ typedef struct DERATE_QUADRANGLE_STRUCT_DEF{
 	float32           Point;
 }DERATE_QUADRANGLE_STRUCT;
 
+
+typedef struct AVERAGE_FLT_S32_STRUCT_DEF{
+
+	sint16		Input;
+	sint16		InputData[1000];
+	sint32            InputTotal;
+	uint16             DataIndex;
+	uint16             Flag;
+	sint16             OutPut;	
+}AVERAGE_FLT_S32;
+
 /**************************************************************************************************
 extern  function
 **************************************************************************************************/
@@ -69,6 +81,8 @@ extern void FstOrderFltS16(FST_ORDER_FLT_S16_STRUCT *pFlt , uint16 Fc);
 extern void FstOrderFltS32(FST_ORDER_FLT_S32_STRUCT *pFlt , uint16 Fc);
 extern float32 GetAdSampleSignalValue(uint16 m_SignalAD,SIGNAL_TABLE_INFO_STRUCT m_TableInfo);
 extern void  DerateForQuadrangleDown(DERATE_QUADRANGLE_STRUCT * pDerate, uint16 m_PointOffset);
+extern void  DerateForQuadrangleUp(DERATE_QUADRANGLE_STRUCT * pDerate, uint16 m_PointOffset);
+extern void  SlidAverageFltS32(AVERAGE_FLT_S32 *pAverageFltS32, uint16 DataLength);
 extern uint16 gIgbtTemp[];
 extern SIGNAL_TABLE_INFO_STRUCT   gAdSignal[];
 
