@@ -1,3 +1,4 @@
+
 config
     the command is below:
     git config --global commit.template git_commit_template.txt(file_name)
