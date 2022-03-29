@@ -1,3 +1,10 @@
+config
+    the command is below:
+    git config --global commit.template git_commit_template.txt(file_name)
+    git config --global core.editor sublime_text(or vim)
+    git commit
+
+
 <type>(修改类型)(scope(影响范围)): subject(标题)
 <--空行-->
 <body>[正文]
